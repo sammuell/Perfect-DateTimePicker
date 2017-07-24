@@ -513,13 +513,13 @@
                         if (!current_month) {
                             $cell.addClass('oday');
                         }
-                        else if ((std != null && std > date) || (edd != null && edd < date)) {
-                            //out of date range
-                            $cell.addClass('day disabled');
-                            disabled = true;
-                        } else {
-                            //in date range
+                        else {
                             $cell.addClass('day');
+                        }
+                        if ((std != null && std > date) || (edd != null && edd < date)) {
+                            //out of date range
+                            $cell.addClass('disabled');
+                            disabled = true;
                         }
                         $cell.data('disabled', disabled);
                         if (!disabled && selectedDate) {
@@ -534,10 +534,11 @@
                                 iday == TD) {
                                 $cell.addClass('today');
                             }
-                            var wday = date.getDay();
-                            if (wday === 0 || wday ===6) {
-                                $cell.addClass("weekend");
-                            }
+                        }
+
+                        var wday = date.getDay();
+                        if (wday === 0 || wday === 6) {
+                            $cell.addClass("weekend");
                         }
                     }
                     $frow = $frow.next();
@@ -912,7 +913,7 @@
                                 //click 'ok' button on YM panel
                                 _loadDateData($datetable, displayDate);
                                 utilsApplyFunc(picker, options.onDisplayUpdate, _arguments);
-                                if($datetable.parent().length > 0){
+                                if (options.viewMode !== VIEWMODE.YM) {
                                     $monthtable.hide("fast");
                                 }
                                 break;
@@ -923,41 +924,49 @@
                                 break;
                             case NAV['year']:
                                 //choose one year
+                                var selectedYear = parseInt($target.text(), 10);
                                 cache.selectedYear && cache.selectedYear.removeClass('selected');
                                 cache.selectedYear = $target;
-                                displayDate.setFullYear($target.text());
-                                _setSelectedDate(displayDate);
+                                displayDate.setFullYear(selectedYear);
+                                // Only update the selection if the picker is not a date and/or time picker
+                                if (options.viewMode === VIEWMODE.YM) {
+                                    _setSelectedDate(displayDate);
+                                }
                                 _loadMonthData($monthtable, displayDate);
                                 utilsApplyFunc(picker, options.onDisplayUpdate, _arguments);
                                 break;
                             case NAV['month']:
                                 //choose one month
+                                var selectedMonth = parseInt($target.data('month'), 10);
                                 cache.selectedMonth && cache.selectedMonth.removeClass('selected');
                                 cache.selectedMonth = $target.addClass('selected');
-                                displayDate.setMonth($target.data('month'));
-                                _setSelectedDate(displayDate);
+                                displayDate.setMonth(selectedMonth);
+                                // Only update the selection if the picker is not a date and/or time picker
+                                if (options.viewMode === VIEWMODE.YM) {
+                                    _setSelectedDate(displayDate);
+                                }
                                 utilsApplyFunc(picker, options.onDisplayUpdate, _arguments);
                                 break;
                             case NAV['day']:
-                                var day = parseInt($target.text(), 10);
+                                var selectedDay = parseInt($target.text(), 10);
                                 if ($target.hasClass('oday')) {
-                                    if (day < 15) {
+                                    if (selectedDay < 15) {
                                         // switch to next month
                                         _toNextMonth();
-                                        displayDate.setDate(day);
+                                        displayDate.setDate(selectedDay);
                                         _loadDateData($datetable, displayDate);
                                         utilsApplyFunc(picker, options.onDisplayUpdate, _arguments);
                                     }
                                     else {
                                         // switch to previous month
                                         _toPrevMonth();
-                                        displayDate.setDate(day);
+                                        displayDate.setDate(selectedDay);
                                         _loadDateData($datetable, displayDate);
                                         utilsApplyFunc(picker, options.onDisplayUpdate, _arguments);
                                     }
                                     // determine new "target" cell
                                     $target = $target.closest('table').find('td.day').filter(function() {
-                                        return ($(this).text() == day);
+                                        return ($(this).text() == selectedDay);
                                     });
                                 }
                                 //choose one day
@@ -965,11 +974,8 @@
                                 cache.selectedDate = $target.addClass('selected');
                                 displayDate.setFullYear(cache.showYear);
                                 displayDate.setMonth(cache.showMonth);
-                                displayDate.setDate(day);
+                                displayDate.setDate(selectedDay);
                                 _setSelectedDate(displayDate);
-                                if(!$timetable.parent().length){
-                                    utilsApplyFunc(picker, options.onClose, _arguments);
-                                }
                                 break;
                             case NAV['plus']:
                                 //plus time

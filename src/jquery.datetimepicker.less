@@ -12,7 +12,8 @@
 @color-date-hover-background: #eee;
 @color-date-today: @color-key;
 @color-date-select: @color-key;
-@color-date-other: @color-border;
+@color-date-other: tint(@color-font, 60%);
+@color-date-other-weekend: tint(@color-date-weekend, 60%);
 
 /***function***/
 .border-radius(@radius) {
@@ -81,9 +82,6 @@
       cursor: pointer;
       vertical-align: middle;
       .border-radius(3px);
-      &.weekend{
-        color: @color-date-weekend;
-      }
     }
     &.mt tbody td{
       .size(58px, 38px);
@@ -97,13 +95,21 @@
     &.name {
       font-weight: bold;
     }
+    &.weekend{
+      color: @color-date-weekend;
+    }
     &.oday{
       color: @color-date-other;
-      cursor: auto;
+      &.weekend{
+        color: @color-date-other-weekend;
+      }
     }
     &.disabled {
-      color: #999;
+      color: @color-date-other;
       cursor: auto;
+      &.weekend {
+        color:  @color-date-other-weekend;
+      }
     }
     i{
       font-size: 18px;

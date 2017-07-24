@@ -40,9 +40,6 @@
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-.perfect-datetimepicker table td.weekend {
-  color: #d9534f;
-}
 .perfect-datetimepicker table.mt tbody td {
   width: 58px;
   height: 38px;
@@ -53,13 +50,21 @@
 .perfect-datetimepicker td.name {
   font-weight: bold;
 }
+.perfect-datetimepicker td.weekend {
+  color: #d9534f;
+}
 .perfect-datetimepicker td.oday {
-  color: #CCCCCC;
-  cursor: auto;
+  color: #adadad;
+}
+.perfect-datetimepicker td.oday.weekend {
+  color: #f0bab9;
 }
 .perfect-datetimepicker td.disabled {
-  color: #999;
+  color: #adadad;
   cursor: auto;
+}
+.perfect-datetimepicker td.disabled.weekend {
+  color: #f0bab9;
 }
 .perfect-datetimepicker td i {
   font-size: 18px;
